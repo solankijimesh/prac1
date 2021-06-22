@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,12 +14,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.practical1.adapter.BaseAdapter;
 import com.example.practical1.databinding.ActivityMainBinding;
+import com.example.practical1.listener.ItemClickListener;
 import com.example.practical1.model.GridModel;
 import com.example.practical1.util.AppConstant;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity
+        implements View.OnClickListener, ItemClickListener {
 
     private Context mContext = this;
 
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<GridModel> gridModelArrayList;
     private BaseAdapter adapter;
+
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +76,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gridModelArrayList = new ArrayList<>();
         for (int i = 0; i < number * number; i++) {
             GridModel gridModel = new GridModel();
-            gridModel.setClickable(true);
+            gridModel.setClickable(false);
             gridModel.setColor(AppConstant.Colors.White);
             gridModelArrayList.add(gridModel);
         }
 
-        adapter = new BaseAdapter(mContext, gridModelArrayList, R.layout.item_button);
+        adapter = new BaseAdapter(mContext, gridModelArrayList, R.layout.item_button, this);
         binding.rvButtons.setAdapter(adapter);
         binding.rvButtons.setLayoutManager(new GridLayoutManager(mContext, number));
+
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(runnable, 1000);
+                setRandomButtonClickable(new Random().nextInt(number * number));
+            }
+        }, 1000);
+    }
+
+    private void setRandomButtonClickable(int nextInt) {
+
+        try {
+
+            GridModel gridModel = gridModelArrayList.get(nextInt);
+            if (gridModel.getColor() != AppConstant.Colors.Blue) {
+                gridModel.setColor(AppConstant.Colors.Red);
+                gridModel.setClickable(true);
+                gridModelArrayList.set(nextInt, gridModel);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            e.getLocalizedMessage();
+        }
+    }
+
+    @Override
+    public void onItemClick(int itemPosition, Object object) {
+        GridModel gridModel = (GridModel) object;
+        gridModel.setColor(AppConstant.Colors.Blue);
+        gridModelArrayList.set(itemPosition, gridModel);
+        adapter.notifyDataSetChanged();
     }
 }

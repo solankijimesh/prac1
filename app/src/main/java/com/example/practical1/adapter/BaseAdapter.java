@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.practical1.BR;
 import com.example.practical1.R;
 import com.example.practical1.databinding.ItemButtonBinding;
+import com.example.practical1.listener.ItemClickListener;
 import com.example.practical1.model.GridModel;
-import com.example.practical1.util.AppConstant;
 
 import java.util.ArrayList;
 
@@ -25,11 +25,19 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.MyViewHolder> 
     private final Context mContext;
     private final ArrayList<?> items;
     private final int layoutId;
+    private ItemClickListener listener;
 
     public BaseAdapter(Context mContext, ArrayList<?> items, int layoutId) {
         this.mContext = mContext;
         this.items = items;
         this.layoutId = layoutId;
+    }
+
+    public BaseAdapter(Context mContext, ArrayList<?> items, int layoutId, ItemClickListener listener) {
+        this.mContext = mContext;
+        this.items = items;
+        this.layoutId = layoutId;
+        this.listener = listener;
     }
 
     @NonNull
@@ -49,7 +57,7 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.MyViewHolder> 
         return items != null ? items.size() : 0;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private final ViewDataBinding binding;
 
@@ -59,6 +67,9 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.MyViewHolder> 
         }
 
         private void setBinding(Object object) {
+
+            if (listener == null)
+                listener = (ItemClickListener) mContext;
 
             binding.setVariable(BR.data, object);
 
@@ -89,7 +100,7 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.MyViewHolder> 
                     @Override
                     public void onClick(View v) {
                         if (gridModel.isClickable()) {
-                            gridModel.setColor(AppConstant.Colors.Blue);
+                            listener.onItemClick(getLayoutPosition(), gridModel);
                         }
                     }
                 });
