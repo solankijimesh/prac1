@@ -2,7 +2,9 @@ package com.example.practical1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -116,5 +118,32 @@ public class MainActivity extends AppCompatActivity
         gridModel.setColor(AppConstant.Colors.Blue);
         gridModelArrayList.set(itemPosition, gridModel);
         adapter.notifyDataSetChanged();
+        checkAllClicked();
+    }
+
+    private void checkAllClicked() {
+
+        boolean allClicked = true;
+
+        for (int i = 0; i < gridModelArrayList.size(); i++) {
+
+            GridModel gridModel = gridModelArrayList.get(i);
+            if (gridModel.getColor() != AppConstant.Colors.Blue) {
+                allClicked = false;
+                break;
+            }
+        }
+
+        if (allClicked) {
+            new AlertDialog.Builder(mContext).
+                    setTitle("Congratulations")
+                    .setMessage("You won the Game!!!").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+            handler.removeCallbacks(runnable);
+        }
     }
 }
