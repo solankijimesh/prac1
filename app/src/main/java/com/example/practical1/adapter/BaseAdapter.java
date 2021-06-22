@@ -1,7 +1,10 @@
 package com.example.practical1.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -10,6 +13,10 @@ import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.practical1.BR;
+import com.example.practical1.R;
+import com.example.practical1.databinding.ItemButtonBinding;
+import com.example.practical1.model.GridModel;
+import com.example.practical1.util.AppConstant;
 
 import java.util.ArrayList;
 
@@ -52,7 +59,41 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.MyViewHolder> 
         }
 
         private void setBinding(Object object) {
+
             binding.setVariable(BR.data, object);
+
+            if (binding instanceof ItemButtonBinding) {
+
+                GridModel gridModel = (GridModel) object;
+
+                switch (gridModel.getColor()) {
+
+                    case Red:
+                        ((ItemButtonBinding) binding).btn.setBackgroundTintList(ColorStateList.valueOf(
+                                ((ItemButtonBinding) binding).btn.getContext().getResources().getColor(R.color.red)));
+                        break;
+
+                    case Blue:
+                        ((ItemButtonBinding) binding).btn.setBackgroundTintList(ColorStateList.valueOf(
+                                ((ItemButtonBinding) binding).btn.getContext().getResources().getColor(R.color.blue)));
+                        break;
+
+                    case White:
+                        ((ItemButtonBinding) binding).btn.setBackgroundTintList(ColorStateList.valueOf(
+                                ((ItemButtonBinding) binding).btn.getContext().getResources().getColor(R.color.white)));
+                        break;
+                }
+
+                ((ItemButtonBinding) binding).btn.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("ResourceAsColor")
+                    @Override
+                    public void onClick(View v) {
+                        if (gridModel.isClickable()) {
+                            gridModel.setColor(AppConstant.Colors.Blue);
+                        }
+                    }
+                });
+            }
         }
     }
 }

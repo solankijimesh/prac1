@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.practical1.adapter.BaseAdapter;
 import com.example.practical1.databinding.ActivityMainBinding;
 import com.example.practical1.model.GridModel;
+import com.example.practical1.util.AppConstant;
 
 import java.util.ArrayList;
 
@@ -53,13 +54,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     boolean isNumberIsSquareRoot = ((number - Math.floor(number)) == 0);
 
-                    if (isNumberIsSquareRoot) {
-
+                    if (isNumberIsSquareRoot)
                         setRecyclerView((int) number);
-
-                    } else {
+                    else
                         Toast.makeText(mContext, "Not a Square Root Number", Toast.LENGTH_SHORT).show();
-                    }
                 } else
                     Toast.makeText(mContext, "Enter Square Root Number", Toast.LENGTH_SHORT).show();
                 break;
@@ -70,7 +68,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         gridModelArrayList = new ArrayList<>();
         for (int i = 0; i < number * number; i++) {
-            gridModelArrayList.add(new GridModel());
+            GridModel gridModel = new GridModel();
+            gridModel.setClickable(true);
+            gridModel.setColor(AppConstant.Colors.White);
+            gridModelArrayList.add(gridModel);
         }
 
         adapter = new BaseAdapter(mContext, gridModelArrayList, R.layout.item_button);
