@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity
     private void setRandomButtonClickable(int nextInt) {
 
         try {
-
             GridModel gridModel = gridModelArrayList.get(nextInt);
             if (gridModel.getColor() != AppConstant.Colors.Blue) {
                 gridModel.setColor(AppConstant.Colors.Red);
